@@ -13,10 +13,11 @@ o.bind("SUPER + ALT + Home", "Save window width", "omarchy-hyprland-window-width
 o.bind("SUPER + Home", "Restore window width", "omarchy-hyprland-window-width restore")
 o.bind("SUPER + L", "Toggle workspace layout", "omarchy-hyprland-workspace-layout-toggle")
 
+-- Only the scrolling layout reads "focus l/r"; dwindle rejects it as an unknown layoutmsg.
 local function focus_left()
   local window = hl.get_active_window()
 
-  if window and window.fullscreen == 1 then
+  if window and window.fullscreen == 1 and window.workspace.tiled_layout == "scrolling" then
     return hl.dsp.layout("focus l")
   end
 
@@ -26,7 +27,7 @@ end
 local function focus_right()
   local window = hl.get_active_window()
 
-  if window and window.fullscreen == 1 then
+  if window and window.fullscreen == 1 and window.workspace.tiled_layout == "scrolling" then
     return hl.dsp.layout("focus r")
   end
 
