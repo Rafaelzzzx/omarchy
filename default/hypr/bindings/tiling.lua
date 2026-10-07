@@ -14,11 +14,12 @@ o.bind("SUPER + Home", "Restore window width", "omarchy-hyprland-window-width re
 o.bind("SUPER + L", "Cycle workspace layout", "omarchy-hyprland-workspace-layout-toggle")
 o.bind("SUPER + ALT + L", "Cycle workspace layout back", "omarchy-hyprland-workspace-layout-toggle back")
 
--- Only the scrolling layout reads "focus l/r"; dwindle rejects it as an unknown layoutmsg.
+-- Only a tiled window on a scrolling workspace has a column for "focus l/r" to move from;
+-- dwindle rejects it as an unknown layoutmsg, and a floating window has no column.
 local function focus_left()
   local window = hl.get_active_window()
 
-  if window and window.fullscreen == 1 and window.workspace.tiled_layout == "scrolling" then
+  if window and window.fullscreen == 1 and not window.floating and window.workspace.tiled_layout == "scrolling" then
     return hl.dsp.layout("focus l")
   end
 
@@ -28,7 +29,7 @@ end
 local function focus_right()
   local window = hl.get_active_window()
 
-  if window and window.fullscreen == 1 and window.workspace.tiled_layout == "scrolling" then
+  if window and window.fullscreen == 1 and not window.floating and window.workspace.tiled_layout == "scrolling" then
     return hl.dsp.layout("focus r")
   end
 
