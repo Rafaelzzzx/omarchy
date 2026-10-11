@@ -33,7 +33,24 @@ local function focus_direction(direction)
   -- Scrolling: preserva o foco por coluna em janelas maximizadas.
   if workspace.tiled_layout == "scrolling" then
     if current.fullscreen == 1 then
-      return hl.dsp.layout("focus " .. direction)
+      -- Avoid wrapping to the opposite end when crossing monitor edges.
+      local current_center = current.at.x + (current.size.x / 2)
+
+      for _, window in ipairs(hl.get_workspace_windows(workspace)) do
+        if window.address ~= current.address and not window.floating then
+          local center = window.at.x + (window.size.x / 2)
+          local in_direction = direction == "l"
+            and center < current_center
+            or direction == "r"
+            and center > current_center
+
+          if in_direction then
+            return hl.dsp.layout("focus " .. direction)
+          end
+        end
+      end
+
+      return hl.dsp.focus({ direction = direction })
     end
 
     local candidates = hl.get_workspace_windows(workspace)
